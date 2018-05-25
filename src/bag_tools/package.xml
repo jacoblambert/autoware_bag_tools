@@ -1,0 +1,23 @@
+<package>
+  <name>autoware_bag_tools</name>
+  <version>0.0.3</version>
+  <description>Autoware modified bag_tools; ROS tools and scripts related to bagfiles</description>
+  <maintainer email="jacob.lambert@tier4.jp">Jacob Lambert</maintainer>
+
+  <license>BSD</license>
+
+  <url type="website"></url>
+  <!-- <url type="bugtracker"></url> -->
+
+  <author email="jacob.lambert@tier4.jp">Jacob Lambert</author>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>rospy</build_depend>
+  <build_depend>rosbag</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <run_depend>rospy</run_depend>
+  <run_depend>rosbag</run_depend>
+  <run_depend>sensor_msgs</run_depend>
+  <export>
+  </export>
+</package>
