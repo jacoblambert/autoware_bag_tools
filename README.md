@@ -1,5 +1,5 @@
-Modification of a few bag_tools scripts for Autoware
-.
+Modification of a few bag_tools scripts for Autoware.
+
 Original repository: https://github.com/srv/srv_tools
 
 bag_tools ROS wiki: http://wiki.ros.org/bag_tools
