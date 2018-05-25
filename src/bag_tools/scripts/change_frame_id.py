@@ -38,21 +38,27 @@ import rosbag
 import os
 import sys
 import argparse
+import platform
 
-def change_frame_id(inbag,outbag,frame_id,topics):
+def change_frame_id(inbag,outbag,frame_ids,topics):
   rospy.loginfo('   Processing input bagfile: %s', inbag)
   rospy.loginfo('  Writing to output bagfile: %s', outbag)
   rospy.loginfo('            Changing topics: %s', topics)
-  rospy.loginfo('           Writing frame_ids: %s', frame_id)
+  rospy.loginfo('           Writing frame_ids: %s', frame_ids)
 
   outbag = rosbag.Bag(outbag,'w')
   for topic, msg, t in rosbag.Bag(inbag,'r').read_messages():
     if topic in topics:
       if msg._has_header:
-        msg.header.frame_id = frame_id
+        if len(frame_ids) == 1:
+          msg.header.frame_id = frame_ids[0]
+        else:
+          idx = topics.index(topic)
+          msg.header.frame_id = frame_ids[idx]
+
     outbag.write(topic, msg, t)
   rospy.loginfo('Closing output bagfile and exit...')
-  outbag.close();
+  outbag.close()
 
 if __name__ == "__main__":
   rospy.init_node('change_frame_id')
@@ -60,9 +66,16 @@ if __name__ == "__main__":
       description='Create a new bagfile from an existing one replacing the frame ids of requested topics.')
   parser.add_argument('-o', metavar='OUTPUT_BAGFILE', required=True, help='output bagfile')
   parser.add_argument('-i', metavar='INPUT_BAGFILE', required=True, help='input bagfile')
-  parser.add_argument('-f', metavar='FRAME_ID', required=True, help='desired frame_ids name in the topics')
+  parser.add_argument('-f', metavar='FRAME_ID', required=True, help='desired frame_ids name in the topics. If there is '
+                                                                    'one frame ID, all topics are changed to that ID. '
+                                                                    'If there is more than one frame ID, one topic per '
+                                                                    'frame ID is expected.', nargs='+')
   parser.add_argument('-t', metavar='TOPIC', required=True, help='topic(s) to change', nargs='+')
   args = parser.parse_args()
+
+  # Check
+  if len(args.f) != 1 and len(args.f) != len(args.t):
+    raise ValueError("Number of frame IDs given must be 1 or equal to the number of topics. Aborting")
 
   try:
     change_frame_id(args.i,args.o,args.f,args.t)
